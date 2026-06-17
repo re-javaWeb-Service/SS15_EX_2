@@ -7,6 +7,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.util.AntPathMatcher;
 
@@ -18,7 +19,11 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                 .requestMatchers(" /api/auth/register","/api/auth/login").permitAll()
                 .requestMatchers("/api/**").authenticated()
-        ).csrf(AbstractHttpConfigurer::disable);
+        ).csrf(csrf -> csrf
+                .csrfTokenRepository(
+                        CookieCsrfTokenRepository.withHttpOnlyFalse()
+                )
+        );
 
         return httpSecurity.build();
     }
